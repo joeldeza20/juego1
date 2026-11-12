@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a12">
+  <title>ATLAS — Lluvia de Instituciones</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="game-enhancements.css">
+</head>
+<body>
+  <main class="shell">
+    <audio id="background-music" preload="none" loop aria-hidden="true"></audio>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Atlas, inicio">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy"><b>ATLAS</b><small>LLUVIA DE INSTITUCIONES</small></span>
+      </a>
+      <div class="topbar-right">
+        <span class="studio">ATLAS INTERACTIVE STUDIOS</span>
+        <button class="header-button" id="sound-button" title="Sonido activado" aria-label="Silenciar sonido">♫</button>
+        <button class="header-button" id="fullscreen-button" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+        <button class="header-button admin-button" id="open-admin-button">ADMIN</button>
+      </div>
+    </header>
+
+    <section class="intro-panel" id="intro-panel">
+      <div class="intro-copy">
+        <p class="eyebrow"><span class="signal"></span> ARCADE ESCOLAR · JULIACA, PUNO</p>
+        <h1>LLUVIA DE<br><span>INSTITUCIONES</span></h1>
+        <p class="intro-subtitle">EL GRAN RETO ESCOLAR</p>
+        <p class="intro-description">Atrapa los logotipos que caen, encadena aciertos y supera cada desafío. ¡Que empiece la lluvia!</p>
+        <div class="intro-actions">
+          <button class="primary-button" id="start-button">INICIAR PARTIDA <span>→</span></button>
+          <button class="secondary-button" id="instructions-button">CÓMO JUGAR</button>
+        </div>
+        <div class="participant-picker">
+          <label for="institution-select">INSTITUCIÓN PARTICIPANTE</label>
+          <select id="institution-select" aria-label="Elegir institución participante"></select>
+          <small>Atrapa el logo seleccionado para sumar puntos y esquiva los demás.</small>
+          <div class="institution-gallery" id="institution-gallery" role="group" aria-label="Logos de instituciones participantes"></div>
+        </div>
+        <section class="player-panel" id="player-panel">
+          <div class="player-panel-heading">
+            <div><p class="eyebrow">JUGADORES</p><h2>Acceso de jugadores</h2></div>
+            <span id="player-status">Opcional · puedes jugar sin cuenta</span>
+          </div>
+          <div class="player-session">
+            <span id="player-profile" hidden></span>
+            <button class="secondary-button logout-player" id="logout-player" type="button" hidden>CERRAR SESIÓN</button>
+          </div>
+          <div class="player-forms" id="player-forms">
+            <form id="player-register-form">
+              <h3>Registrarse</h3>
+              <label>Usuario<input name="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9_]{3,32}" autocomplete="username" required></label>
+              <label>Contraseña<input name="password" type="password" minlength="4" maxlength="200" autocomplete="new-password" required></label>
+              <button class="primary-button" type="submit">CREAR CUENTA</button>
+            </form>
+            <form id="player-login-form">
+              <h3>Iniciar Sesión</h3>
+              <label>Usuario<input name="username" maxlength="32" autocomplete="username" required></label>
+              <label>Contraseña<input name="password" type="password" maxlength="200" autocomplete="current-password" required></label>
+              <button class="secondary-button" type="submit">INGRESAR</button>
+            </form>
+          </div>
+        </section>
+        <div class="intro-records">
+          <span>RÉCORD <b id="home-record">0000</b></span>
+          <span>NIVELES <b id="home-levels">00 / 05</b></span>
+          <span>PARTIDAS <b id="home-games">00</b></span>
+        </div>
+      </div>
+      <div class="intro-art" aria-hidden="true">
+        <div class="art-grid"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="floating-logo logo-a">ATLAS</div><div class="floating-logo logo-b">✦</div><div class="floating-logo logo-c">+</div>
+        <div class="collector-art"><span></span><i></i></div>
+        <div class="art-caption">CATCH THE FALL · BEAT THE RECORD</div>
+      </div>
+    </section>
+
+    <section class="game-section" id="game-section">
+      <div class="stats-bar">
+        <div class="stat"><span>PUNTOS</span><b id="score-display">0000</b></div>
+        <div class="stat"><span>NIVEL</span><b id="level-display">01</b></div>
+        <div class="stat"><span>TIEMPO</span><b id="time-display">01:30</b></div>
+        <div class="stat"><span>RÉCORD</span><b id="record-display">0000</b></div>
+        <div class="stat lives-stat"><span>VIDAS</span><b id="lives-display">♥ ♥ ♥</b></div>
+        <div class="stat participant-stat"><span>PARTICIPAS CON</span><b id="participant-display">—</b></div>
+        <div class="game-actions">
+          <button class="pause-button" id="pause-button" aria-label="Pausar partida">Ⅱ</button>
+          <button class="quit-button" id="quit-button">SALIR</button>
+        </div>
+      </div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+      <div class="level-message"><span id="level-name">PRIMER CONTACTO</span><span id="combo-display"></span></div>
+      <div class="power-belt" id="power-belt" aria-label="Poderes activos"></div>
+      <div class="arena-wrap">
+        <canvas id="arena" width="960" height="540" tabindex="0" aria-label="Juego arcade. Usa las flechas o A y D para mover el recolector."></canvas>
+        <div class="arena-overlay" id="arena-overlay">
+          <div class="modal-card" id="overlay-card">
+            <div class="modal-symbol" id="modal-symbol">A</div>
+            <p class="eyebrow" id="modal-eyebrow">ATLAS INTERACTIVE STUDIOS</p>
+            <h2 id="modal-title">¿Listo para la lluvia?</h2>
+            <p class="modal-description" id="modal-description">Atrapa el logo de tu institución, deja caer los demás y esquiva los objetos corruptos.</p>
+            <div id="modal-extra"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+          </div>
+        </div>
+      </div>
+      <div class="touch-controls">
+        <button data-move="left" aria-label="Mover recolector a la izquierda">←</button>
+        <span>DESLIZA EN EL ESCENARIO O USA LOS BOTONES</span>
+        <button data-move="right" aria-label="Mover recolector a la derecha">→</button>
+      </div>
+      <div class="game-footer"><span>ATLAS INTERACTIVE STUDIOS</span><span>/// JUEGA LIMPIO · ROMPE TU RÉCORD</span><span><i class="online-dot"></i> SISTEMA EN LÍNEA (LOCAL)</span></div>
+    </section>
+
+    <section class="bottom-row" id="bottom-row">
+      <article><span class="bottom-icon">⌖</span><div><b>ATRAPA</b><p>Recoge los logos para sumar puntos.</p></div></article>
+      <article><span class="bottom-icon gold">✦</span><div><b>ENCADENA</b><p>Haz combos y consigue bonificaciones.</p></div></article>
+      <article><span class="bottom-icon red">◇</span><div><b>ESQUIVA</b><p>Evita los objetos corruptos y protege tus vidas.</p></div></article>
+    </section>
+    <footer class="site-footer"><span>INNOVATION IN EVERY GAME.</span><button id="credits-button">CRÉDITOS</button></footer>
+  </main>
+
+  <!-- MODAL DE ADMINISTRACIÓN COMPLETO -->
+  <div class="modal-backdrop" id="admin-modal-backdrop" hidden>
+    <div class="admin-modal-card">
+      <div class="admin-modal-header">
+        <h2>PANEL DE ADMINISTRACIÓN</h2>
+        <button class="close-button" id="close-admin-modal">✕</button>
+      </div>
+      
+      <div id="admin-auth-section">
+        <p class="admin-hint">Ingresa la contraseña de Administrador (Por defecto: <b>admin123</b>).</p>
+        <form id="admin-login-form" class="admin-auth-form">
+          <input type="password" id="admin-pass-input" placeholder="Contraseña de admin" required>
+          <button type="submit" class="primary-button">ENTRAR AL PANEL</button>
+        </form>
+      </div>
+
+      <div id="admin-dashboard-section" hidden>
+        <nav class="admin-tabs">
+          <button class="admin-tab active" data-tab="institutions" type="button">INSTITUCIONES Y LOGOS</button>
+          <button class="admin-tab" data-tab="players" type="button">JUGADORES Y PUNTAJES</button>
+        </nav>
+
+        <div class="admin-view active" id="admin-tab-institutions">
+          <h3>Crear o Modificar Institución con Logo</h3>
+          <form id="admin-inst-form" class="institution-form">
+            <input type="hidden" name="id">
+            <label>Nombre<input name="name" maxlength="120" required></label>
+            <label>Sigla<input name="acronym" maxlength="20" required></label>
+            <label>Puntos<input name="points" type="number" min="10" max="1000" value="150" required></label>
+            <label>Subir Logo (Imagen)<input type="file" name="logo_file" accept="image/*"></label>
+            <label>Estado
+              <select name="active">
+                <option value="1">Activa</option>
+                <option value="0">Inactiva</option>
+              </select>
+            </label>
+            <div class="admin-form-actions">
+              <button class="primary-button" type="submit" id="admin-inst-submit">GUARDAR INSTITUCIÓN</button>
+              <button class="secondary-button" type="button" id="admin-inst-cancel" hidden>CANCELAR</button>
+            </div>
+          </form>
+          <div class="logo-list" id="admin-inst-list"></div>
+        </div>
+
+        <div class="admin-view" id="admin-tab-players">
+          <h3>Jugadores Registrados</h3>
+          <div class="admin-player-layout">
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>USUARIO</th><th>PARTIDAS</th><th>RÉCORD</th></tr></thead>
+                <tbody id="admin-players-table"></tbody>
+              </table>
+            </div>
+            <aside class="admin-player-games">
+              <div id="admin-player-details" class="player-details">
+                <p>Selecciona un jugador para ver sus datos.</p>
+              </div>
+              <form id="admin-reset-pass-form" class="player-password-form" hidden>
+                <h4>Restablecer contraseña</h4>
+                <input name="new_password" type="password" minlength="4" placeholder="Nueva contraseña" required>
+                <button class="secondary-button" type="submit">CAMBIAR CONTRASEÑA</button>
+              </form>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+  <script src="game.js"></script>
+</body>
+</html>
